@@ -61,7 +61,7 @@ def averagePixel(image):
     Returns:
         int: The average pixel in the image (Range of 0-255).
     """
-    return int(np.sum(image) / numberOfPixels(image))
+    return int(image.sum() / numberOfPixels(image))
 
 def convertToBlackAndWhite(image):
     """ This function converts a grayscale image to black and white.
@@ -102,7 +102,7 @@ def averageTwoImages(image1, image2):
         numpy.ndarray: The average of image1 and image2.
 
     """
-    avg = (image1.astype(np.float32) + image2.astype(np.float32)) / 2
+    avg = (image1.astype(np.uint32) + image2.astype(np.uint32)) / 2
     return avg.astype(np.uint8)
 
 def flipHorizontal(image):
