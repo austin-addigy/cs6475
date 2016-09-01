@@ -1,6 +1,6 @@
 # ASSIGNMENT 2
-# Your Name
-# GTID
+# Ram Subramanian
+# 902668689
 
 import cv2
 import numpy as np
@@ -43,11 +43,7 @@ def numberOfPixels(image):
     Returns:
         int: The number of pixels in an image.
     """
-    # WRITE YOUR CODE HERE.
-
-
-
-    # END OF FUNCTION.
+    return image.size
 
 def averagePixel(image):
     """ This function returns the average color value of a grayscale image.
@@ -65,11 +61,7 @@ def averagePixel(image):
     Returns:
         int: The average pixel in the image (Range of 0-255).
     """
-    # WRITE YOUR CODE HERE.
-
-
-
-    # END OF FUNCTION.
+    return int(np.sum(image) / numberOfPixels(image))
 
 def convertToBlackAndWhite(image):
     """ This function converts a grayscale image to black and white.
@@ -88,11 +80,9 @@ def convertToBlackAndWhite(image):
     Returns:
         numpy.ndarray: The black and white image.
     """
-    # WRITE YOUR CODE HERE.
-
-
-
-    # END OF FUNCTION.
+    image[image>128] = 255
+    image[image<=128] = 0
+    return image
 
 def averageTwoImages(image1, image2):
     """ This function averages the pixels of the two input images.
@@ -112,11 +102,8 @@ def averageTwoImages(image1, image2):
         numpy.ndarray: The average of image1 and image2.
 
     """
-    # WRITE YOUR CODE HERE.
-
-
-
-    # END OF FUNCTION.
+    avg = (image1.astype(np.float32) + image2.astype(np.float32)) / 2
+    return avg.astype(np.uint8)
 
 def flipHorizontal(image):
     """ This function flips the input image across the horizontal axis.
@@ -134,8 +121,4 @@ def flipHorizontal(image):
         numpy.ndarray: The horizontally flipped image.
 
     """
-    # WRITE YOUR CODE HERE.
-
-
-
-    # END OF FUNCTION.
+    return image[:,::-1]
