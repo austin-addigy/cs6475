@@ -80,9 +80,10 @@ def convertToBlackAndWhite(image):
     Returns:
         numpy.ndarray: The black and white image.
     """
-    image[image>128] = 255
-    image[image<=128] = 0
-    return image
+    img = image.copy()
+    img[img>128] = 255
+    img[img<=128] = 0
+    return img
 
 def averageTwoImages(image1, image2):
     """ This function averages the pixels of the two input images.
