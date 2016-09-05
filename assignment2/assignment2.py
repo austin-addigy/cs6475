@@ -102,7 +102,7 @@ def averageTwoImages(image1, image2):
         numpy.ndarray: The average of image1 and image2.
 
     """
-    avg = (image1.astype(np.uint32) + image2.astype(np.uint32)) / 2
+    avg = (image1 / 2.0 + image2 / 2.0)
     return avg.astype(np.uint8)
 
 def flipHorizontal(image):
