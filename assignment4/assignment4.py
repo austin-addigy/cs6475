@@ -53,10 +53,9 @@ def normalizeImage(src):
         output (numpy.ndarray): The input array after shifting and scaling the
                                 value range to fit in the interval [0...255]
     """
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-
+    img = src.astype(np.float_)
+    img = (img - img.min()) * 255.0 / img.max()
+    return img.astype(src.dtype)
 
 def gradientX(image):
     """
@@ -86,10 +85,9 @@ def gradientX(image):
                                 no calculation can be done once the last column
                                 is reached.
     """
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-
+    img = image.astype(np.float_)
+    img = img[:,1:] - img[:,:-1]
+    return img.astype(np.int16)
 
 def gradientY(image):
     """
@@ -119,10 +117,9 @@ def gradientY(image):
                                 no calculation can be done once the last row
                                 is reached.
     """
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-
+    img = image.astype(np.float_)
+    img = img[1:] - img[:-1]
+    return img.astype(np.int16)
 
 def padReflectBorder(image, N):
     """
@@ -158,10 +155,9 @@ def padReflectBorder(image, N):
                                 rows and columns filled with the values of the
                                 input image reflected over the borders.
     """
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-
+    img = np.hstack((image[:,1:N+1][:,::-1], image, image[:,-N-1:-1][:,::-1]))
+    img = np.vstack((img[1:N+1][::-1], img, img[-N-1:-1][::-1]))
+    return img
 
 def crossCorrelation2D(image, kernel):
     """
@@ -207,11 +203,29 @@ def crossCorrelation2D(image, kernel):
                                 size by k-1 rows and k-1 columns, where k
                                 is the size of the kernel.
     """
+    nr, nc = image.shape            ## 2D, so only single channel
 
-    # WRITE YOUR CODE HERE.
+    k = kernel.shape[0]
+    kcc = kernel[::-1, ::-1]
 
-    # END OF FUNCTION.
+    res = np.zeros((nr - k + 1, nc - k + 1))
 
+    def convolve(patch, kernel):
+        k = kernel.shape[0]
+        sum = 0
+        ksum = 0
+
+        for i in range(k):
+            for j in range(k):
+                sum = sum + patch[i, j] * kernel[i, j]
+                ksum = ksum + kernel[i, j]
+        return sum / ksum
+
+    for i in range(nr-k+1):
+        for j in range(nc-k+1):
+            res[i, j] = convolve(image[i:i+k, j:j+k], kcc)
+
+    return res.astype(np.int16)
 
 def pyFilter2D(image, kernel):
     """
