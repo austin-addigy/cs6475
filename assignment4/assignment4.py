@@ -203,29 +203,24 @@ def crossCorrelation2D(image, kernel):
                                 size by k-1 rows and k-1 columns, where k
                                 is the size of the kernel.
     """
-    nr, nc = image.shape            ## 2D, so only single channel
 
-    k = kernel.shape[0]
-    kcc = kernel[::-1, ::-1]
-
-    res = np.zeros((nr - k + 1, nc - k + 1))
-
-    def convolve(patch, kernel):
-        k = kernel.shape[0]
+    def xcorr(patch, kernel):
         sum = 0
-        ksum = 0
-
+        k = kernel.shape[0]
         for i in range(k):
             for j in range(k):
                 sum = sum + patch[i, j] * kernel[i, j]
-                ksum = ksum + kernel[i, j]
-        return sum / ksum
+        return sum
 
-    for i in range(nr-k+1):
-        for j in range(nc-k+1):
-            res[i, j] = convolve(image[i:i+k, j:j+k], kcc)
+    k = kernel.shape[0]
+    nrow, ncol = image.shape                ## 2D, so only single channel
+    res = np.zeros((nrow-k+1, ncol-k+1))
 
-    return res.astype(np.int16)
+    for i in range(nrow-k+1):
+        for j in range(ncol-k+1):
+            res[i, j] = xcorr(image[i:i+k, j:j+k], kernel)
+
+    return np.around(res).astype(np.int16)
 
 def pyFilter2D(image, kernel):
     """
