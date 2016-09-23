@@ -220,7 +220,7 @@ def crossCorrelation2D(image, kernel):
         for j in range(ncol-k+1):
             res[i, j] = xcorr(image[i:i+k, j:j+k], kernel)
 
-    return np.astype(np.int16)
+    return res.astype(np.int16)
 
 def pyFilter2D(image, kernel):
     """
