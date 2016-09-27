@@ -54,7 +54,8 @@ def normalizeImage(src):
                                 value range to fit in the interval [0...255]
     """
     img = src.astype(np.float_)
-    img = (img - img.min()) * 255.0 / img.max()
+    img = img - img.min()
+    img = img * 255.0 / img.max()
     return img.astype(src.dtype)
 
 def gradientX(image):
