@@ -13,3 +13,6 @@
 [submodule "assignment5/bonnie"]
 	path = assignment5/bonnie
 	url = https://github.gatech.edu/sb300/bonnie-libsubmit.git
+[submodule "assignment6/bonnie"]
+	path = assignment6/bonnie
+	url = https://github.gatech.edu/sb300/bonnie-libsubmit.git
