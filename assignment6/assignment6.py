@@ -77,10 +77,7 @@ def reduce_layer(image, kernel=generatingKernel(0.4)):
             input is 5x7, the output will be 3x4.
 
     """
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-
+    return cv2.filter2D(image, -1, kernel)[::2, ::2]
 
 def expand_layer(image, kernel=generatingKernel(0.4)):
     """
@@ -117,10 +114,9 @@ def expand_layer(image, kernel=generatingKernel(0.4)):
             An image of shape (2*r, 2*c). For instance, if the input is 3x4,
             then the output will be 6x8.
     """
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-
+    out = np.zeros((image.shape[0]*2, image.shape[1]*2))
+    out[::2, ::2] = image
+    return cv2.filter2D(out, -1, kernel) * 4
 
 def gaussPyramid(image, levels):
     """
@@ -150,10 +146,12 @@ def gaussPyramid(image, levels):
             for you. The arrays are of type numpy.ndarray.
     """
     output = [image]
-    # WRITE YOUR CODE HERE.
 
-    # END OF FUNCTION.
+    for i in range(1, levels):
+        bimg = cv2.GaussianBlur(output[-1], (5, 5), 0.05)
+        output.append(reduce_layer(bimg))
 
+    return output
 
 def laplPyramid(gaussPyr):
     """
@@ -191,11 +189,23 @@ def laplPyramid(gaussPyr):
                   layer of the input pyramid since it cannot be subtracted
                   anymore.
     """
-    output = []
-    # WRITE YOUR CODE HERE.
+    def crop_image(image, size):
+        imh, imw = image.shape
+        if (imh != size[0])
+            image = image[:size[0]-imh, :]
+        if (imw != size[1])
+            image = image[:, :size[1]-imw]
+        return image
 
-    # END OF FUNCTION.
+    gaussPyr = gaussPyr[::-1]
+    output = [gaussPyr[0]]
 
+    for i, img in enumerate(gaussPyr[:-1]):
+        img = expand_layer(img)
+        img = crop_image(img, gaussPyr[i+1].shape)
+        output.append(gaussPyr[i+1] - img)
+
+    return output[::-1]
 
 def blend(laplPyrWhite, laplPyrBlack, gaussPyrMask):
     """
