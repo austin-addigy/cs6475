@@ -77,7 +77,7 @@ def reduce_layer(image, kernel=generatingKernel(0.4)):
             input is 5x7, the output will be 3x4.
 
     """
-    return cv2.filter2D(image, -1, kernel)[::2, ::2]
+    return cv2.filter2D(image, -1, kernel, borderType=cv2.BORDER_CONSTANT)[::2, ::2].astype(np.float64)
 
 def expand_layer(image, kernel=generatingKernel(0.4)):
     """
@@ -116,7 +116,7 @@ def expand_layer(image, kernel=generatingKernel(0.4)):
     """
     out = np.zeros((image.shape[0]*2, image.shape[1]*2))
     out[::2, ::2] = image
-    return cv2.filter2D(out, -1, kernel) * 4
+    return cv2.filter2D(out, -1, kernel, borderType=cv2.BORDER_CONSTANT) * 4
 
 def gaussPyramid(image, levels):
     """
@@ -147,7 +147,7 @@ def gaussPyramid(image, levels):
     """
     output = [image]
 
-    for i in range(1, levels):
+    for i in range(levels):
         bimg = cv2.GaussianBlur(output[-1], (5, 5), 0.05)
         output.append(reduce_layer(bimg))
 
@@ -191,9 +191,9 @@ def laplPyramid(gaussPyr):
     """
     def crop_image(image, size):
         imh, imw = image.shape
-        if (imh != size[0])
+        if not imh == size[0]:
             image = image[:size[0]-imh, :]
-        if (imw != size[1])
+        if not imw == size[1]:
             image = image[:, :size[1]-imw]
         return image
 
