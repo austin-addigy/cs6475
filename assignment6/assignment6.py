@@ -246,10 +246,11 @@ def blend(laplPyrWhite, laplPyrBlack, gaussPyrMask):
             A list containing the blended layers of the two laplacian pyramids
     """
     blendedPyr = []
-    # WRITE YOUR CODE HERE.
+    for i, mask in enumerate(gaussPyrMask):
+        out = laplPyrWhite[i] * mask + laplPyrBlack[i] * (1 - mask)
+        blendedPyr.append(out)
 
-    # END OF FUNCTION.
-
+    return blendedPyr
 
 def collapse(pyramid):
     """
