@@ -281,6 +281,19 @@ def collapse(pyramid):
         output : numpy.ndarray, dtype=float
             An image of the same shape as the base layer of the pyramid.
     """
-    # WRITE YOUR CODE HERE.
+    def crop(image, size):
+        imh, imw = image.shape
+        if not imh == size[0]:
+            image = image[:size[0]-imh, :]
+        if not imw == size[1]:
+            image = image[:, :size[1]-imw]
+        return image
 
-    # END OF FUNCTION.
+    pyramid = pyramid[::-1]
+    out = pyramid[0]
+
+    for i in range(1, len(pyramid)):
+        out = crop(expand_layer(out), pyramid[i].shape)
+        out = out + pyramid[i]
+
+    return out
