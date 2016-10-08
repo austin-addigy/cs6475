@@ -189,7 +189,7 @@ def laplPyramid(gaussPyr):
                   layer of the input pyramid since it cannot be subtracted
                   anymore.
     """
-    def crop_image(image, size):
+    def crop(image, size):
         imh, imw = image.shape
         if not imh == size[0]:
             image = image[:size[0]-imh, :]
@@ -202,7 +202,7 @@ def laplPyramid(gaussPyr):
 
     for i, img in enumerate(gaussPyr[:-1]):
         img = expand_layer(img)
-        img = crop_image(img, gaussPyr[i+1].shape)
+        img = crop(img, gaussPyr[i+1].shape)
         output.append(gaussPyr[i+1] - img)
 
     return output[::-1]
