@@ -67,14 +67,16 @@ def findMatchesBetweenImages(image_1, image_2):
             cv2.DMatch.
     """
     matches = None       # type: list of cv2.DMath
-    image_1_kp = None    # type: list of cv2.KeyPoint items
-    image_1_desc = None  # type: numpy.ndarray of numpy.uint8 values.
-    image_2_kp = None    # type: list of cv2.KeyPoint items.
-    image_2_desc = None  # type: numpy.ndarray of numpy.uint8 values.
-    # WRITE YOUR CODE HERE.
 
-    # We coded the return statement for you. You are free to modify it -- just
-    # make sure the tests pass.
+    orb = cv2.ORB_create()
+    kp1, des1 = orb.detectAndCompute(image_1, None)
+    kp2, des2 = orb.detectAndCompute(image_2, None)
+
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(des1, des2)
+
+    matches = sorted(matches, key = lambda x:x.distance)
+
     return image_1_kp, image_2_kp, matches
 
 
