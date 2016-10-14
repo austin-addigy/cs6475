@@ -77,7 +77,7 @@ def findMatchesBetweenImages(image_1, image_2):
 
     matches = sorted(matches, key = lambda x:x.distance)
 
-    return image_1_kp, image_2_kp, matches
+    return kp1, kp2, matches[:10]
 
 
 def drawMatches(image_1, image_1_keypoints, image_2, image_2_keypoints, matches):
