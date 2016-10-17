@@ -66,9 +66,7 @@ def findMatchesBetweenImages(image_1, image_2):
             A list of matches, length 10. Each item in the list is of type
             cv2.DMatch.
     """
-    matches = None       # type: list of cv2.DMath
-
-    orb = cv2.ORB_create()
+    orb = cv2.ORB()
     kp1, des1 = orb.detectAndCompute(image_1, None)
     kp2, des2 = orb.detectAndCompute(image_2, None)
 
@@ -133,5 +131,23 @@ def drawMatches(image_1, image_1_keypoints, image_2, image_2_keypoints, matches)
             marks indicating matching features with lines connecting the
             matches.
     """
+    (h1, w1) = image_1.shape[:2]
+    (h2, w2) = image_2.shape[:2]
+
+    output = np.zeros((max(h1, h2), w1+w2) + image_1.shape[2:])
+    output[:h1, :w1] = image_1
+    output[:h2, w1:] = image_2
+
+    for match in matches:
+        (p1x, p1y) = image_1_keypoints[match.queryIdx].pt
+        (p2x, p2y) = image_2_keypoints[match.trainIdx].pt
+        pt1 = (int(p1x), int(p1y))
+        pt2 = (int(p2x + w1), int(p2y))
+        rand = np.random.randint
+        color = (rand(0, 255), rand(0, 255), rand(0, 255))
+
+        cv2.circle(output, pt1, 10, color, 5)
+        cv2.circle(output, pt2, 10, color, 5)
+        cv2.line(output, pt1, pt2, color, 5, lineType=cv2.CV_AA)
 
     return output
