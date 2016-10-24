@@ -210,18 +210,15 @@ def getBoundingCorners(image_1, image_2, homography):
             of the bounding rectangle of a canvas large enough to fit both
             images
     """
-    x_min, x_max = 0, 0
-    y_min, y_max = 0, 0
-    # WRITE YOUR CODE HERE - YOU ONLY NEED TO DEFINE THE FOUR VALUES:
-    # x_min, y_min, x_max, y_max
-
-
-    # END OF CODING
-    min_xy = np.array([x_min, y_min])
-    max_xy = np.array([x_max, y_max])
+    xu = np.squeeze(getImageCorners(image_1))
+    xu = np.concatenate((xu, np.ones((4, 1))), axis=1)
+    xu = np.dot(homography, xu.T).T
+    x = np.array([[i/k, j/k] for (i, j, k) in xu])
+    y = np.squeeze(getImageCorners(image_2))
+    z = np.vstack((x, y))
+    min_xy = np.array([np.amin(z[:,0]), np.amin(z[:,1])])
+    max_xy = np.array([np.amax(z[:,0]), np.amax(z[:,1])])
     return min_xy, max_xy
-    # END OF FUNCTION
-
 
 def warpCanvas(image, homography, min_xy, max_xy):
     """
