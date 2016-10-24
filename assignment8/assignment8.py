@@ -55,13 +55,13 @@ def getImageCorners(image):
         corners : numpy.ndarray, dtype=np.float32
             Array of shape (4, 1, 2)
     """
+    s = image.shape
     corners = np.zeros((4, 1, 2), dtype=np.float32)
-    # WRITE YOUR CODE HERE
-
-
+    corners[0][0] = (0, 0)
+    corners[1][0] = (s[1], 0)
+    corners[2][0] = (s[1], s[0])
+    corners[3][0] = (0, s[0])
     return corners
-    # END OF FUNCTION
-
 
 def findMatchesBetweenImages(image_1, image_2, num_matches):
     """
@@ -96,19 +96,16 @@ def findMatchesBetweenImages(image_1, image_2, num_matches):
             A list of matches between the keypoint descriptor lists of
             length no greater than num_matches
     """
-    matches = None       # type: list of cv2.DMath
-    image_1_kp = None    # type: list of cv2.KeyPoint items
-    image_1_desc = None  # type: numpy.ndarray of numpy.uint8 values.
-    image_2_kp = None    # type: list of cv2.KeyPoint items.
-    image_2_desc = None  # type: numpy.ndarray of numpy.uint8 values.
-    # WRITE YOUR CODE HERE.
+    orb = cv2.ORB()
+    kp1, des1 = orb.detectAndCompute(image_1, None)
+    kp2, des2 = orb.detectAndCompute(image_2, None)
 
-    # COPY YOUR CODE FROM A7 HERE. REMEMBER TO MODIFY IT SO THAT IT
-    # RETURNS num_matches MATCHES, NOT A FIXED NUMBER OF MATCHES.
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(des1, des2)
 
-    return image_1_kp, image_2_kp, matches
-    # END OF FUNCTION.
+    matches = sorted(matches, key = lambda x:x.distance)
 
+    return kp1, kp2, matches[:num_matches]
 
 def findHomography(image_1_kp, image_2_kp, matches):
     """
