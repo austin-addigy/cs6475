@@ -278,15 +278,11 @@ def warpCanvas(image, homography, min_xy, max_xy):
             An array containing the warped input image embedded in a canvas
             large enough to join with the next image in the panorama
     """
-    warped_image = None
-    size = tuple(np.round(max_xy - min_xy).astype(np.int))  # use in call to cv2.warpPerspective
-    # WRITE YOUR CODE HERE
-
-
-    # END OF CODING
+    size = tuple(np.round(max_xy - min_xy).astype(np.int))
+    T = np.array([[1, 0, -min_xy[0]], [0, 1, -min_xy[1]], [0, 0, 1]])
+    H = np.dot(T, homography)
+    warped_image = cv2.warpPerspective(image, H, size)
     return warped_image
-    # END OF FUNCTION
-
 
 def blendImagePair(warped_image, image_2, point):
     """
