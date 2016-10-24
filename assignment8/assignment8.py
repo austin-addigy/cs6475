@@ -153,14 +153,12 @@ def findHomography(image_1_kp, image_2_kp, matches):
             A 3x3 array defining a homography transform between
             image_1 and image_2
     """
-    image_1_points = np.zeros((len(matches), 1, 2), dtype=np.float32)
-    image_2_points = np.zeros((len(matches), 1, 2), dtype=np.float32)
-    # WRITE YOUR CODE HERE.
+    image_1_points = np.array([[image_1_kp[match.queryIdx].pt] for match in matches], dtype=np.float32)
+    image_2_points = np.array([[image_2_kp[match.trainIdx].pt] for match in matches], dtype=np.float32)
 
-    # Replace this return statement with the homography.
-    return transform
-    # END OF FUNCTION
-
+    H, _ = cv2.findHomography(image_1_points, image_2_points, method=cv2.RANSAC, ransacReprojThreshold=5.0)
+    
+    return H
 
 def getBoundingCorners(image_1, image_2, homography):
     """
