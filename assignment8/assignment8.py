@@ -326,12 +326,22 @@ def blendImagePair(warped_image, image_2, point):
             An array the same size as warped_image containing both input
             images on a single canvas
     """
-    output_image = np.copy(warped_image)
-    # WRITE YOUR CODE HERE
+    img2 = np.zeros(warped_image.shape)
+    img2[point[1]:point[1]+image_2.shape[0], point[0]:point[0]+image_2.shape[1]] = image_2
 
-    # REPLACE THIS WITH YOUR BLENDING CODE.
-    output_image[point[1]:point[1] + image_2.shape[0],
-                 point[0]:point[0] + image_2.shape[1]] = image_2
+    mask1 = warped_image.copy()
+    mask2 = img2.copy()
 
-    return output_image
-    # END OF FUNCTION
+    mask1[mask1 > 0] = 1
+    mask2[mask2 > 0] = 1
+    common_mask = mask1 * mask2 * 0.5
+    mask1 = mask1 - common_mask
+    mask2 = mask2 - common_mask
+
+    output_image = warped_image * mask1 + img2 * mask2
+
+    # output_image = warped_image.copy()
+    # output_image[point[1]:point[1] + image_2.shape[0],
+    #              point[0]:point[0] + image_2.shape[1]] = image_2
+
+    return output_image.astype(np.uint8)
