@@ -316,7 +316,7 @@ def computeResponseCurve(intensity_samples, log_exposures, smoothing_lambda, wei
     mat_A[-1, intensity_range // 2] = 1
 
     # PART 2: Solve the system using x = A^-1 * b
-    x, _, _, _ = np.linalg.lstsq(mat_A, mat_b)
+    x = np.linalg.lstsq(mat_A, mat_b)[0]
 
     # Assuming that you set up your equation so that the first elements of
     # x correspond to g(z); otherwise change to match your constraints
@@ -376,13 +376,19 @@ def computeRadianceMap(images, log_exposure_times, response_curve, weighting_fun
         img_rad_map : numpy.ndarray, dtype=np.float64
             The image radiance map in log space
     """
+    images = np.array(images)
+
     min_pixel = 0.0
     max_pixel = 255.0
     img_shape = images[0].shape
     img_rad_map = np.ones(img_shape, dtype=np.float64)
-    # WRITE YOUR CODE HERE
 
-    # STOP WRITING CODE HERE.
+    for i in range(img_shape[0]):
+        for j in range(img_shape[1]):
+            wt = map(weighting_function, images[:, i, j])
+            wtsum = sum(wt)
+            if wtsum > 0:
+                img_rad_map[i, j] = sum(wt * (response_curve[i] - log_exposure_times)) / wtsum
     return img_rad_map
 
 
