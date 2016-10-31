@@ -59,10 +59,7 @@ def linearWeight(pixel_value):
             A value from 0.0 to pixel_range_max
     """
     max_intensity = 255.  # maximum intensity value of a uint8 picture
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-
+    return np.min([pixel_value, max_intensity - pixel_value])
 
 def sampleIntensities(images):
     """ Randomly sample pixel intensity exposure slices for each possible pixel
@@ -104,6 +101,7 @@ def sampleIntensities(images):
             exposure layer (shape = num_intensities x num_images)
 
     """
+    images = np.array(images)
     # There are 256 intensity values to sample for uint8 images in the
     # exposure stack - one for each value [0...255], inclusive
     num_intensities = 256
@@ -114,9 +112,13 @@ def sampleIntensities(images):
     mid = np.round(num_images // 2)  # using integer division is arbitrary in this case
     mid_img = images[mid]
 
-    # WRITE YOUR CODE HERE.
+    for i in range(num_intensities):
+        idx = np.where(mid_img == i)
+        if idx[0].size == 0:
+            continue
+        pick = np.random.randint(0, idx[0].size)
+        intensity_values[i] = images[:, idx[0][pick], idx[1][pick]]
 
-    # END OF FUNCTION.
     return intensity_values
 
 
