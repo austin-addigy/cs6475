@@ -385,12 +385,12 @@ def computeRadianceMap(images, log_exposure_times, response_curve, weighting_fun
 
     for i in range(img_shape[0]):
         for j in range(img_shape[1]):
+            px = np.array([images[k][i, j] for k in range(images.shape[0])])
             wt = map(weighting_function, images[:, i, j])
             wtsum = sum(wt)
             if wtsum > 0:
-                img_rad_map[i, j] = sum(wt * (response_curve[i] - log_exposure_times)) / wtsum
+                img_rad_map[i, j] = sum(wt * (response_curve[px] - log_exposure_times)) / wtsum
     return img_rad_map
-
 
 def computeHDR(images, log_exposure_times, smoothing_lambda=100.):
     """ This function combines the functions above to produce the HDR
