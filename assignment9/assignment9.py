@@ -289,24 +289,34 @@ def computeResponseCurve(intensity_samples, log_exposures, smoothing_lambda, wei
                       num_samples + intensity_range + 1), dtype=np.float64)
     mat_b = np.zeros((mat_A.shape[0], 1), dtype=np.float64)
 
-    # PART 1a: WRITE YOUR CODE HERE
-    # Create data-fitting constraints
+    # PART 1a: Create data-fitting constraints
+    idx = 0
+    for i, ir in enumerate(intensity_samples):
+        for j, jc in enumerate(ir):
+            w_ij = weighting_function(jc)
+            mat_A[idx, jc] = w_ij
+            mat_A[idx, num_samples + i] = -w_ij
+            mat_b[idx, 0] = w_ij * log_exposures[j]
+            idx = idx + 1
 
-    # PART 1b: WRITE YOUR CODE HERE
-    # Apply smoothing constraints throughout the pixel range. Loop
+    # PART 1b: Apply smoothing constraints throughout the pixel range. Loop
     # 1 (skip first value) to intensity range (last loop value is
     # intensity_range-1 -- i.e., skip the last value). Remember to
     # offset the smoothing constraint rows past the data constraints.
     # i.e., the first row should be after offset = num_samples * num_images
+    offset = num_images * num_samples
+    for idx in range(1, intensity_range):
+        w = weighting_function(idx)
+        mat_A[offset + idx - 1, idx - 1] = smoothing_lambda * w
+        mat_A[offset + idx - 1, idx] = -2 * smoothing_lambda * w
+        mat_A[offset + idx - 1, idx + 1] = smoothing_lambda * w
 
-    # PART 1c: WRITE YOUR CODE HERE
-    # Adjust color curve by adding a constraint forcing the middle pixel
+    # PART 1c: Adjust color curve by adding a constraint forcing the middle pixel
     # value to be zero
+    mat_A[-1, intensity_range // 2] = 1
 
-    # PART 2: WRITE YOUR CODE HERE
-    # Solve the system using x = A^-1 * b
-
-    # STOP WRITING CODE HERE.
+    # PART 2: Solve the system using x = A^-1 * b
+    x, _, _, _ = np.linalg.lstsq(mat_A, mat_b)
 
     # Assuming that you set up your equation so that the first elements of
     # x correspond to g(z); otherwise change to match your constraints
