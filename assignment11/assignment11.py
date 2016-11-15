@@ -49,13 +49,7 @@ def videoVolume(images):
             A 4D numpy array. This array should have dimensions
             (num_frames, rows, cols, 3).
     """
-    output = np.zeros((len(images), images[0].shape[0], images[0].shape[1],
-                      images[0].shape[2]), dtype=np.uint8)
-
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-    return output
+    return np.array(images)
 
 
 def computeSimilarityMetric(video_volume):
@@ -117,10 +111,13 @@ def computeSimilarityMetric(video_volume):
 
     output = np.zeros((len(video_volume), len(video_volume)), dtype=np.float)
 
-    # WRITE YOUR CODE HERE.
+    for i, frame1 in enumerate(video_volume.astype(np.float_)):
+        for j, frame2 in enumerate(video_volume[i+1:]):
+            rssd = np.sum((frame1 - frame2) ** 2) ** 0.5
+            output[i, i+j+1] = rssd
+            output[i+j+1, i] = rssd
 
-    # END OF FUNCTION.
-    return output
+    return output / np.average(output)
 
 
 def transitionDifference(ssd_difference):
@@ -251,13 +248,7 @@ def synthesizeLoop(video_volume, start, end):
             A list of arrays of size (height, width, 3) and dtype np.uint8,
             similar to the original input the videoVolume function.
     """
-
-    output = []
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-    return output
-
+    return list(video_volume[start:end+1])
 
 def binomialFilter5():
     """ Return a binomial filter of length 5.
