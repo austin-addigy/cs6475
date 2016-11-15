@@ -221,9 +221,15 @@ def findBiggestLoop(transition_diff, alpha):
     start = 0
     end = 0
     largest_score = 0
-    # WRITE YOUR CODE HERE.
 
-    # END OF FUNCTION.
+    for i in range(len(transition_diff)):
+        for j in range(i+1, len(transition_diff[0])):
+            score = alpha * (j - i) - transition_diff[i, j]
+            if score > largest_score:
+                largest_score = score
+                start = i
+                end = j
+
     return start, end
 
 
