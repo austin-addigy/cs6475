@@ -174,13 +174,9 @@ def transitionDifference(ssd_difference):
           following frame pairings.
     """
 
-    output = np.zeros((ssd_difference.shape[0] - 4,
-                       ssd_difference.shape[1] - 4),
-                      dtype=ssd_difference.dtype)
-    # WRITE YOUR CODE HERE.
-
-    # END OF FUNCTION.
-    return output
+    kernel = np.diag(binomialFilter5())
+    output = cv2.filter2D(ssd_difference, -1, kernel)
+    return output[2:-2, 2:-2]
 
 
 def findBiggestLoop(transition_diff, alpha):
